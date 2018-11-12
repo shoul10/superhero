@@ -14,7 +14,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.spring.swagger.superhero.model.Mission;
 import com.spring.swagger.superhero.model.Superhero;
+import com.spring.swagger.superhero.payload.ApiResponse;
+import com.spring.swagger.superhero.payload.SuperheroMissionRequest;
 import com.spring.swagger.superhero.payload.SuperheroRequest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -89,6 +92,70 @@ public class SuperheroServiceTest {
         assertThat(result.getFirstName()).isEqualTo("Firstname 1");
         assertThat(result.getLastName()).isEqualTo("Lastname 1");
         assertThat(result.getSuperheroName()).isEqualTo("Superheroname 1");
+    }
+	
+	@Test
+    public void updateSuperheroTest() {
+        // given
+		SuperheroRequest superheroRequest = new SuperheroRequest("Firstname 1","Lastname 1", "Superheroname 1");
+		Superhero superhero = new Superhero(1L, "FirstnameUpdated 1","LastnameUpdated 1", "SuperheronameUpdated 1");
+		
+        // when
+        when(superheroService.updateSuperhero(1L, superheroRequest)).thenReturn(superhero);
+
+        // assert
+        Superhero result = superheroService.updateSuperhero(1L, superheroRequest);
+        assertThat(result.getId()).isEqualTo(1);
+        assertThat(result.getFirstName()).isEqualTo("FirstnameUpdated 1");
+        assertThat(result.getLastName()).isEqualTo("LastnameUpdated 1");
+        assertThat(result.getSuperheroName()).isEqualTo("SuperheronameUpdated 1");
+    }
+	
+	@Test
+    public void addMissionToSuperheroTest() {
+        // given
+		Superhero superhero = new Superhero(1L, "Firstname 1","Lastname 1", "Superheroname 1");
+		Mission mission = new Mission(1L, "MissionName 1", false, false);
+		SuperheroMissionRequest superheroMissionRequest = new SuperheroMissionRequest(superhero.getId(), mission.getId());
+		ApiResponse apiResponse = new ApiResponse(true, "Mission added to Superhero");
+		
+        // when
+        when(superheroService.addMissionToSuperhero(superheroMissionRequest)).thenReturn(apiResponse);
+
+        // assert
+        ApiResponse result = superheroService.addMissionToSuperhero(superheroMissionRequest);
+        assertThat(result.getSuccess()).isEqualTo(true);
+        assertThat(result.getMessage()).isEqualTo("Mission added to Superhero");
+    }
+	
+	@Test
+    public void removeMissionFromSuperheroTest() {
+		//Success Example
+		// given
+		Superhero superhero = new Superhero(1L, "Firstname 1","Lastname 1", "Superheroname 1");
+		Mission mission = new Mission(1L, "MissionName 1", false, false);
+		ApiResponse apiResponse = new ApiResponse(true, "Mission removed from Superhero");	
+		
+        // when
+        when(superheroService.removeMissionFromSuperhero(superhero.getId(), mission.getId())).thenReturn(apiResponse);
+
+        // assert
+        ApiResponse result = superheroService.removeMissionFromSuperhero(superhero.getId(), mission.getId());
+        assertThat(result.getSuccess()).isEqualTo(true);
+        assertThat(result.getMessage()).isEqualTo("Mission removed from Superhero");
+        
+        //Failure Example
+        // given
+        Mission completedMission = new Mission(1L, "MissionName 1", true, false);
+		ApiResponse apiResponseFalse = new ApiResponse(false, "Unable to remove a completed mission");
+		
+		// when
+        when(superheroService.removeMissionFromSuperhero(superhero.getId(), completedMission.getId())).thenReturn(apiResponseFalse);
+		
+        // assert
+        ApiResponse badResult = superheroService.removeMissionFromSuperhero(superhero.getId(), completedMission.getId());
+        assertThat(badResult.getSuccess()).isEqualTo(false);
+        assertThat(badResult.getMessage()).isEqualTo("Unable to remove a completed mission");
     }
 
 }
