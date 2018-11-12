@@ -1,8 +1,13 @@
 package com.spring.swagger.superhero.controller;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.Is.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +56,41 @@ public class SuperheroControllerTest {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	@Test
+	public void getSuperheroesTest() throws Exception {
+		// given
+		List<Superhero> superheroes = Arrays.asList(new Superhero(1L, "Firstname 1", "Lastname 1", "SuperheroName 1"),
+				new Superhero(2L, "Firstname 2", "Lastname 2", "SuperheroName 2"));
+
+		// when
+		when(superheroService.findAllSuperheroes()).thenReturn(superheroes);
+		mockMvc.perform(get("/api/superheroes")).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(jsonPath("$", hasSize(2))).andExpect(jsonPath("$[0].id", is(1)))
+				.andExpect(jsonPath("$[0].firstName", is("Firstname 1")))
+				.andExpect(jsonPath("$[0].lastName", is("Lastname 1")))
+				.andExpect(jsonPath("$[0].superheroName", is("SuperheroName 1"))).andExpect(jsonPath("$[1].id", is(2)))
+				.andExpect(jsonPath("$[1].firstName", is("Firstname 2")))
+				.andExpect(jsonPath("$[1].lastName", is("Lastname 2")))
+				.andExpect(jsonPath("$[1].superheroName", is("SuperheroName 2")));
+		verify(superheroService, times(1)).findAllSuperheroes();
+		verifyNoMoreInteractions(superheroService);
+	}
+
+	@Test
+	public void getSuperheroByIdTest() throws Exception {
+		Superhero superhero = new Superhero("Firstname 1", "Lastname 1", "SuperheroName 1");
+		when(superheroService.findSuperheroById(1L)).thenReturn(superhero);
+		mockMvc.perform(get("/api/superheroes/{superheroId}", 1)).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(jsonPath("$.firstName", is("Firstname 1")))
+				.andExpect(jsonPath("$.lastName", is("Lastname 1")))
+				.andExpect(jsonPath("$.superheroName", is("SuperheroName 1")));
+		verify(superheroService, times(1)).findSuperheroById(1L);
+		verifyNoMoreInteractions(superheroService);
+	}
+
 	
 	@Test
 	public void createSuperheroTest() throws Exception {
