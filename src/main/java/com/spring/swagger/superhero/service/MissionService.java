@@ -36,5 +36,14 @@ public class MissionService {
 		mission.setDeleted(missionRequest.isDeleted());
 		return missionRepository.save(mission);
 	}
+	
+	public Mission updateMission(Long missionId, MissionRequest missionRequest) {
+		return missionRepository.findById(missionId).map(mission -> {
+			mission.setMissionName(missionRequest.getMissionName());
+			mission.setCompleted(missionRequest.isCompleted());
+			mission.setDeleted(missionRequest.isDeleted());
+			return missionRepository.save(mission);
+		}).orElseThrow(() -> new ResourceNotFoundException("Mission", "id", missionId));
+	}
 
 }
