@@ -1,8 +1,21 @@
 package com.spring.swagger.superhero.controller;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +65,40 @@ public class MissionControllerTest {
 	}
 	
 	@Test
+	public void getMissionsTest() throws Exception {
+		// given
+		List<Mission> missions = Arrays.asList(new Mission(1L, "MissionName 1", false, false),
+				new Mission(2L, "MissionName 2", true, false));
+
+		// when
+		when(missionService.findAllMissions()).thenReturn(missions);
+		mockMvc.perform(get("/api/missions")).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(jsonPath("$", hasSize(2))).andExpect(jsonPath("$[0].id", is(1)))
+				.andExpect(jsonPath("$[0].missionName", is("MissionName 1")))
+				.andExpect(jsonPath("$[0].completed", is(false)))
+				.andExpect(jsonPath("$[0].deleted", is(false))).andExpect(jsonPath("$[1].id", is(2)))
+				.andExpect(jsonPath("$[1].missionName", is("MissionName 2")))
+				.andExpect(jsonPath("$[1].completed", is(true)))
+				.andExpect(jsonPath("$[1].deleted", is(false)));
+		verify(missionService, times(1)).findAllMissions();
+		verifyNoMoreInteractions(missionService);
+	}
+	
+	@Test
+	public void getMissionByIdTest() throws Exception {
+		Mission mission = new Mission("MissionName 1", true, false);
+		when(missionService.findMissionById(1L)).thenReturn(mission);
+		mockMvc.perform(get("/api/missions/{missionId}", 1)).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(jsonPath("$.missionName", is("MissionName 1")))
+				.andExpect(jsonPath("$.completed", is(true)))
+				.andExpect(jsonPath("$.deleted", is(false)));
+		verify(missionService, times(1)).findMissionById(1L);
+		verifyNoMoreInteractions(missionService);
+	}
+	
+	@Test
 	public void createMissionTest() throws Exception {
 		MissionRequest missionRequest = new MissionRequest("MissionName 1", true, false);
 		Mission mission = new Mission(1L, "MissionName 1", true, false);
@@ -59,6 +106,15 @@ public class MissionControllerTest {
 		mockMvc.perform(
 				post("/api/missions").contentType(MediaType.APPLICATION_JSON).content(asJsonString(mission)))
 				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void updateMissionTest() throws Exception {
+		MissionRequest missionRequest = new MissionRequest("MissionName 1", true, false);
+		Mission mission = new Mission(1L, "MissionName 1", true, false);
+		when(missionService.updateMission(mission.getId(), missionRequest)).thenReturn(mission);
+		mockMvc.perform(put("/api/missions/{missionId}", mission.getId()).contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(mission))).andExpect(status().isOk());
 	}
 
 }
