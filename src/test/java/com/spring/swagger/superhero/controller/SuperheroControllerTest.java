@@ -138,6 +138,17 @@ public class SuperheroControllerTest {
 		verify(superheroService, times(1)).removeMissionFromSuperhero(superhero.getId(), mission.getId());
 		verifyNoMoreInteractions(superheroService);
 	}
+	
+	@Test
+	public void deleteSuperheroTest() throws Exception {
+		Superhero superhero = new Superhero(1L, "Firstname 1", "Lastname 1", "SuperheroName 1");
+		ApiResponse apiResponse = new ApiResponse(true, "Superhero deleted");
+		when(superheroService.deleteSuperhero(superhero.getId())).thenReturn(apiResponse);
+		mockMvc.perform(delete("/api/superheroes/{superheroId}", superhero.getId())).andExpect(status().isOk())
+				.andExpect(jsonPath("$.success", is(true))).andExpect(jsonPath("$.message", is("Superhero deleted")));
+		verify(superheroService, times(1)).deleteSuperhero(superhero.getId());
+		verifyNoMoreInteractions(superheroService);
+	}
 
 	@Test
 	public void badRequestGetSuperheroIdTest() throws Exception {
