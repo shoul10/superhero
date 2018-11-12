@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.swagger.superhero.exception.ResourceNotFoundException;
 import com.spring.swagger.superhero.model.Mission;
+import com.spring.swagger.superhero.payload.MissionRequest;
 import com.spring.swagger.superhero.repository.MissionRepository;
 
 @Service
@@ -26,6 +27,14 @@ public class MissionService {
 	public Mission findMissionById(Long missionId) {
 		return missionRepository.findById(missionId)
 				.orElseThrow(() -> new ResourceNotFoundException("Mission", "ID", missionId));
+	}
+	
+	public Mission createMission(MissionRequest missionRequest) {
+		Mission mission = new Mission();
+		mission.setMissionName(missionRequest.getMissionName());
+		mission.setCompleted(missionRequest.isCompleted());
+		mission.setDeleted(missionRequest.isDeleted());
+		return missionRepository.save(mission);
 	}
 
 }
