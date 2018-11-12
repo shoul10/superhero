@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -115,6 +116,20 @@ public class MissionControllerTest {
 		when(missionService.updateMission(mission.getId(), missionRequest)).thenReturn(mission);
 		mockMvc.perform(put("/api/missions/{missionId}", mission.getId()).contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(mission))).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void softDeleteMissionTest() throws Exception {
+		Mission mission = new Mission(1L, "MissionName 1", false, false);
+		Mission softdeletedMission = new Mission(1L, "MissionName 1", false, true);
+		when(missionService.softDeleteMission(mission.getId())).thenReturn(softdeletedMission);
+		mockMvc.perform(delete("/api/missions/{missionId}", mission.getId())).andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+		.andExpect(jsonPath("$.missionName", is("MissionName 1")))
+		.andExpect(jsonPath("$.completed", is(false)))
+		.andExpect(jsonPath("$.deleted", is(true)));
+		verify(missionService, times(1)).softDeleteMission(mission.getId());
+		verifyNoMoreInteractions(missionService);
 	}
 
 }

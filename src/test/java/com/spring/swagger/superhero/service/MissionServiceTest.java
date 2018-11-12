@@ -108,5 +108,22 @@ public class MissionServiceTest {
         assertThat(result.isCompleted()).isEqualTo(true);
         assertThat(result.isDeleted()).isEqualTo(true);
     }
+	
+	@Test
+    public void softDeleteMissionTest() {
+        // given
+		Mission mission = new Mission(1L, "MissionName 1",false, false);		
+		Mission softDeletedMission = new Mission(1L, "MissionName 1",false, true);
+		
+        // when
+        when(missionService.softDeleteMission(mission.getId())).thenReturn(softDeletedMission);
+
+        // assert
+        Mission result = missionService.softDeleteMission(mission.getId());
+        assertThat(result.getId()).isEqualTo(1);
+        assertThat(result.getMissionName()).isEqualTo("MissionName 1");
+        assertThat(result.isCompleted()).isEqualTo(false);
+        assertThat(result.isDeleted()).isEqualTo(true);
+    }
 
 }

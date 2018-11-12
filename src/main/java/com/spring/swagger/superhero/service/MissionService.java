@@ -45,5 +45,12 @@ public class MissionService {
 			return missionRepository.save(mission);
 		}).orElseThrow(() -> new ResourceNotFoundException("Mission", "id", missionId));
 	}
+	
+	public Mission softDeleteMission(Long missionId) {
+		return missionRepository.findById(missionId).map(mission -> {			
+			mission.setDeleted(true);
+			return missionRepository.save(mission);
+		}).orElseThrow(() -> new ResourceNotFoundException("Mission", "id", missionId));
+	}
 
 }
