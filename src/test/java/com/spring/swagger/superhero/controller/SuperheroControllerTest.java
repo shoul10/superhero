@@ -23,7 +23,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.swagger.superhero.SuperheroApplication;
+import com.spring.swagger.superhero.model.Mission;
 import com.spring.swagger.superhero.model.Superhero;
+import com.spring.swagger.superhero.payload.ApiResponse;
+import com.spring.swagger.superhero.payload.SuperheroMissionRequest;
 import com.spring.swagger.superhero.payload.SuperheroRequest;
 import com.spring.swagger.superhero.service.SuperheroService;
 
@@ -101,5 +104,43 @@ public class SuperheroControllerTest {
 				post("/api/superheroes").contentType(MediaType.APPLICATION_JSON).content(asJsonString(superhero)))
 				.andExpect(status().isOk());
 	}
+	
+	@Test
+	public void updateSuperheroTest() throws Exception {
+		SuperheroRequest superheroRequest = new SuperheroRequest("Firstname 1", "Lastname 1", "SuperheroName 1");
+		Superhero superhero = new Superhero(1L, "Firstname 1", "Lastname 1", "SuperheroName 1");
+		when(superheroService.updateSuperhero(superhero.getId(), superheroRequest)).thenReturn(superhero);
+		mockMvc.perform(put("/api/superheroes/{superheroId}", superhero.getId()).contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(superhero))).andExpect(status().isOk());
+	}
 
+	@Test
+	public void addMissionToSuperheroTest() throws Exception {
+		Superhero superhero = new Superhero(1L, "Firstname 1", "Lastname 1", "SuperheroName 1");
+		Mission mission = new Mission(1L, "MissionName 1", false, false);
+		SuperheroMissionRequest superheroMissionRequest = new SuperheroMissionRequest(superhero.getId(),
+				mission.getId());
+		ApiResponse apiResponse = new ApiResponse(true, "Mission added to Superhero");
+		when(superheroService.addMissionToSuperhero(superheroMissionRequest)).thenReturn(apiResponse);
+		mockMvc.perform(post("/api/superheroes/add-superhero-to-mission").contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(superheroMissionRequest))).andExpect(status().isOk());
+	}
+
+	@Test
+	public void removeMissionFromSuperheroTest() throws Exception {
+		Superhero superhero = new Superhero(1L, "Firstname 1", "Lastname 1", "SuperheroName 1");
+		Mission mission = new Mission(1L, "MissionName 1", false, false);
+		ApiResponse apiResponse = new ApiResponse(true, "Mission removed from Superhero");
+		when(superheroService.removeMissionFromSuperhero(superhero.getId(), mission.getId())).thenReturn(apiResponse);
+		mockMvc.perform(delete("/api/superheroes/{superheroId}/{missionId}", superhero.getId(), mission.getId()))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.success", is(true)))
+				.andExpect(jsonPath("$.message", is("Mission removed from Superhero")));
+		verify(superheroService, times(1)).removeMissionFromSuperhero(superhero.getId(), mission.getId());
+		verifyNoMoreInteractions(superheroService);
+	}
+
+	@Test
+	public void badRequestGetSuperheroIdTest() throws Exception {
+		mockMvc.perform(get("/api/superheroes/{superheroId}", "f")).andExpect(status().isBadRequest());
+	}
 }
