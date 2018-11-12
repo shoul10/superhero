@@ -63,5 +63,10 @@ public class SuperheroController {
 	public ApiResponse removeMissionFromSuperhero(@PathVariable Long superheroId, @PathVariable Long missionId) {
 		return superheroService.removeMissionFromSuperhero(superheroId, missionId);
 	}
+	
+	@DeleteMapping("/{superheroId}")
+	public ApiResponse deleteSuperhero(@PathVariable Long superheroId) {
+		return superheroService.deleteSuperhero(superheroId);
+	}
 
 }

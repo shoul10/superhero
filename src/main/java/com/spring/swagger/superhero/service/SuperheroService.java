@@ -78,5 +78,13 @@ public class SuperheroService {
 		superheroRepository.save(superhero);
 		return new ApiResponse(true, "Mission removed from Superhero");
 	}
+	
+	public ApiResponse deleteSuperhero(Long superheroId) {
+		return superheroRepository.findById(superheroId).map(superhero -> {			
+			superheroRepository.delete(superhero);
+			return new ApiResponse(true, "Superhero deleted");
+		}).orElseThrow(() -> new ResourceNotFoundException("Superhero", "id", superheroId));
+		
+	}
 
 }

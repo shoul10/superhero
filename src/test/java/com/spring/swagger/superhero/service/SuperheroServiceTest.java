@@ -157,5 +157,20 @@ public class SuperheroServiceTest {
         assertThat(badResult.getSuccess()).isEqualTo(false);
         assertThat(badResult.getMessage()).isEqualTo("Unable to remove a completed mission");
     }
+	
+	@Test
+    public void deleteSuperheroTest() {
+        // given
+		Superhero superhero = new Superhero(1L, "Firstname 1","Lastname 1", "Superheroname 1");
+		ApiResponse apiResponse = new ApiResponse(true, "Superhero deleted");
+		
+        // when
+        when(superheroService.deleteSuperhero(superhero.getId())).thenReturn(apiResponse);
+
+        // assert
+        ApiResponse result = superheroService.deleteSuperhero(superhero.getId());
+        assertThat(result.getSuccess()).isEqualTo(true);
+        assertThat(result.getMessage()).isEqualTo("Superhero deleted");
+    }
 
 }
