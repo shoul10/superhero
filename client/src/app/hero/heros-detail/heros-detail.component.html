@@ -1,0 +1,34 @@
+<div *ngIf="hero" class="card">
+  <div class="card-body">
+    <h5 class="card-title">Superhero Name: {{ hero.superheroName }}</h5>
+
+    <div class="hero-info">
+      <p class="card-text">First Name: {{ hero.firstName }}</p>
+      <p class="card-text">Last Name: {{ hero.lastName }}</p>
+    </div>
+
+    <div class="hero-missions">
+      <p>Missions:</p>
+      <div [ngSwitch]="isMission">
+        <a (click)="isMission = !isMission" class="btn btn-primary" *ngSwitchCase="false">+</a>
+
+        <form [formGroup]="myForm" *ngSwitchCase="true">
+          <input formControlName="mission"
+                  [typeahead]="missions"
+                  [typeaheadOptionsLimit]="7"
+                  [typeaheadMinLength]="0"
+                  typeaheadOptionField="missionName"
+                  (typeaheadOnSelect)="onSelect($event)"
+                  placeholder="Typeahead inside a form"
+                  class="form-control">
+
+          <button class="btn btn-primary" (click)="addMissionToHero()">Add Mission</button>
+        </form>
+
+
+      <ul *ngFor="let mission of hero.missions">
+        <li>{{ mission.missionName }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
