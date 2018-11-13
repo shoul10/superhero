@@ -1,0 +1,12 @@
+<div class="add-button">
+  <button type="button" class="btn btn-light" (click)="addMission()">Add Mission</button>
+</div>
+
+<div *ngFor="let mission of missions" class="card-list">
+  <div class="card" [routerLink]="mission.id">
+    <div class="card-body">
+      <h5 class="card-title">{{ mission.missionName }}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">{{ !mission.completed ? 'Not Completed': 'Completed' }}</h6>
+    </div>
+  </div>
+</div>

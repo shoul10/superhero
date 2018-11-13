@@ -1,0 +1,18 @@
+<div *ngIf="mission" class="card">
+  <div class="card-body">
+    <h5 class="card-title">Mission: {{ mission.missionName }}</h5>
+
+    <div class="hero-info">
+      <p class="card-text">Completed: {{ mission.completed }}</p>
+      <p class="card-text">Last Name: {{ mission.deleted }}</p>
+    </div>
+
+    <div class="hero-missions">
+      <p>Heroes:</p>
+      <div>
+      <ul *ngFor="let hero of mission.superheroes">
+        <li>{{ hero.superheroName }}</li>
+      </ul>
+    </div>
+  </div>
+</div>

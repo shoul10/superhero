@@ -1,0 +1,11 @@
+.card-list {
+  padding-bottom: 20px;
+}
+
+.card:hover {
+  cursor: pointer;
+}
+
+.add-button {
+  padding-bottom: 20px;
+}
