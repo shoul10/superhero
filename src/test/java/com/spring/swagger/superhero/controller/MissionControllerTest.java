@@ -13,11 +13,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,12 +26,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.swagger.superhero.SuperheroApplication;
 import com.spring.swagger.superhero.model.Mission;
 import com.spring.swagger.superhero.payload.MissionRequest;
 import com.spring.swagger.superhero.service.MissionService;
+import com.spring.swagger.superhero.utils.Utils;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SuperheroApplication.class)
@@ -54,16 +50,6 @@ public class MissionControllerTest {
 		mockMvc = MockMvcBuilders.standaloneSetup(missionController).build();
 	}
 
-	/*
-	 * converts a Java object into JSON representation
-	 */
-	public static String asJsonString(final Object obj) {
-		try {
-			return new ObjectMapper().writeValueAsString(obj);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
 	
 	@Test
 	public void getMissionsTest() throws Exception {
@@ -105,7 +91,7 @@ public class MissionControllerTest {
 		Mission mission = new Mission(1L, "MissionName 1", true, false);
 		when(missionService.createMission(missionRequest)).thenReturn(mission);
 		mockMvc.perform(
-				post("/api/missions").contentType(MediaType.APPLICATION_JSON).content(asJsonString(mission)))
+				post("/api/missions").contentType(MediaType.APPLICATION_JSON).content(Utils.asJsonString(mission)))
 				.andExpect(status().isOk());
 	}
 	
@@ -115,7 +101,7 @@ public class MissionControllerTest {
 		Mission mission = new Mission(1L, "MissionName 1", true, false);
 		when(missionService.updateMission(mission.getId(), missionRequest)).thenReturn(mission);
 		mockMvc.perform(put("/api/missions/{missionId}", mission.getId()).contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString(mission))).andExpect(status().isOk());
+				.content(Utils.asJsonString(mission))).andExpect(status().isOk());
 	}
 	
 	@Test

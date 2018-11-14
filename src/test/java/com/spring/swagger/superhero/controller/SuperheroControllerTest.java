@@ -5,10 +5,8 @@ import static org.hamcrest.core.Is.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.swagger.superhero.SuperheroApplication;
 import com.spring.swagger.superhero.model.Mission;
 import com.spring.swagger.superhero.model.Superhero;
@@ -29,6 +25,7 @@ import com.spring.swagger.superhero.payload.ApiResponse;
 import com.spring.swagger.superhero.payload.SuperheroMissionRequest;
 import com.spring.swagger.superhero.payload.SuperheroRequest;
 import com.spring.swagger.superhero.service.SuperheroService;
+import com.spring.swagger.superhero.utils.Utils;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SuperheroApplication.class)
@@ -36,6 +33,7 @@ public class SuperheroControllerTest {
 	
 	
 	private MockMvc mockMvc;
+	
 
 	@Mock
 	private SuperheroService superheroService;
@@ -48,17 +46,7 @@ public class SuperheroControllerTest {
 		MockitoAnnotations.initMocks(this);
 		mockMvc = MockMvcBuilders.standaloneSetup(superheroController).build();
 	}
-
-	/*
-	 * converts a Java object into JSON representation
-	 */
-	public static String asJsonString(final Object obj) {
-		try {
-			return new ObjectMapper().writeValueAsString(obj);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+	
 	
 	@Test
 	public void getSuperheroesTest() throws Exception {
@@ -101,7 +89,7 @@ public class SuperheroControllerTest {
 		Superhero superhero = new Superhero(1L, "Firstname 1", "Lastname 1", "SuperheroName 1");
 		when(superheroService.createSuperhero(superheroRequest)).thenReturn(superhero);
 		mockMvc.perform(
-				post("/api/superheroes").contentType(MediaType.APPLICATION_JSON).content(asJsonString(superhero)))
+				post("/api/superheroes").contentType(MediaType.APPLICATION_JSON).content(Utils.asJsonString(superhero)))
 				.andExpect(status().isOk());
 	}
 	
@@ -111,7 +99,7 @@ public class SuperheroControllerTest {
 		Superhero superhero = new Superhero(1L, "Firstname 1", "Lastname 1", "SuperheroName 1");
 		when(superheroService.updateSuperhero(superhero.getId(), superheroRequest)).thenReturn(superhero);
 		mockMvc.perform(put("/api/superheroes/{superheroId}", superhero.getId()).contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString(superhero))).andExpect(status().isOk());
+				.content(Utils.asJsonString(superhero))).andExpect(status().isOk());
 	}
 
 	@Test
@@ -123,7 +111,7 @@ public class SuperheroControllerTest {
 		ApiResponse apiResponse = new ApiResponse(true, "Mission added to Superhero");
 		when(superheroService.addMissionToSuperhero(superheroMissionRequest)).thenReturn(apiResponse);
 		mockMvc.perform(post("/api/superheroes/add-superhero-to-mission").contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString(superheroMissionRequest))).andExpect(status().isOk());
+				.content(Utils.asJsonString(superheroMissionRequest))).andExpect(status().isOk());
 	}
 
 	@Test
