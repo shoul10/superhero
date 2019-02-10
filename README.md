@@ -25,7 +25,7 @@ The goal of this assigment is to have a REST application to manage a Super hero 
     * Nice to Have:
         - Securize the Deletion operation with [Spring Security](https://spring.io/projects/spring-security)
         - [Cucumber](https://cucumber.io/) tests
-        - frontend with [Angular](https://angular.io/)/[React](https://reactjs.org/)
+        - frontend with [Angular](https://angular.io/)
         - Apply one design Pattern
         - Deploy you application with [Docker](https://www.docker.com/)
         - Have your test and/or deployment automated in [jenkins](https://jenkins.io/) (or similar service)
