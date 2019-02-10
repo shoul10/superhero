@@ -1,0 +1,19 @@
+<h2>Edit Hero</h2>
+
+<form [formGroup]="heroForm" (ngSubmit)="updateHero()">
+  <div class="form-group">
+    <input formControlName="firstName" class="form-control" type="text" placeholder="First Name">
+  </div>
+
+  <div class="form-group">
+    <input formControlName="lastName" class="form-control" type="text" placeholder="Last Name">
+  </div>
+
+  <div class="form-group">
+    <input formControlName="superheroName" class="form-control" type="text" placeholder="Superhero Name">
+  </div>  
+  
+  <div class="save-button">
+    <button class="btn btn-primary" type="submit" [disabled]="!heroForm.valid">Save</button>
+  </div> 
+</form>

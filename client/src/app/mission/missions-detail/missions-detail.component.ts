@@ -16,6 +16,7 @@ export class MissionsDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private missionService: MissionService
   ) { }
 
@@ -30,6 +31,16 @@ export class MissionsDetailComponent implements OnInit {
       this.mission = mission;
       console.log(this.mission);
     });
+  }
+  
+  deleteMission() {
+    this.missionService.deleteMission(this.missionId).subscribe(() => {
+      this.router.navigateByUrl('/missions');
+    });
+  }
+  
+  editMission() {
+    this.router.navigateByUrl('/missions/edit/'+this.missionId);
   }
 
 }

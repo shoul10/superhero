@@ -77,5 +77,15 @@ export class HerosDetailComponent implements OnInit {
       this.ngOnInit();
     });
   }
+  
+  deleteHero() {
+    this.heroService.deleteHero(this.heroId).subscribe(() => {
+      this.router.navigateByUrl('/heros');
+    });
+  }
+  
+  editHero() {
+    this.router.navigateByUrl('/heros/edit/'+this.heroId);
+  }
 
 }

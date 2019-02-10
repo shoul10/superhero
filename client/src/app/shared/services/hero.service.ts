@@ -9,6 +9,8 @@ const httpOptions = {
   })
 };
 
+const secureHttpOptions = {headers: new HttpHeaders({Authorization: 'Basic ' + btoa('admin:admin')})};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,9 +31,17 @@ export class HeroService {
   addHero(hero) {
     return this.http.post(this.heroApiUrl, hero, httpOptions);
   }
+  
+  updateHero(heroId, hero) {
+    return this.http.put(this.heroApiUrl + '/' + heroId, hero, httpOptions);
+  }
 
   addMissionToHero(missionHero) {
     return this.http.post(this.heroApiUrl + '/add-superhero-to-mission', missionHero, httpOptions);
+  }
+  
+  deleteHero(heroId) {
+    return this.http.delete(this.heroApiUrl+ '/' + heroId, secureHttpOptions);
   }
 
 }

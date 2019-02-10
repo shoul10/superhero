@@ -1,6 +1,6 @@
 <div class="add-button">
     <button type="button" class="btn btn-light" (click)="addHero()">Add Hero</button>
-  </div>
+</div>
 
 <div *ngFor="let hero of heros" class="card-list">
   <div class="card" [routerLink]="hero.id">

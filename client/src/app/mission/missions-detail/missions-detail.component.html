@@ -4,7 +4,7 @@
 
     <div class="hero-info">
       <p class="card-text">Completed: {{ mission.completed }}</p>
-      <p class="card-text">Last Name: {{ mission.deleted }}</p>
+      <p class="card-text">Deleted: {{ mission.deleted }}</p>
     </div>
 
     <div class="hero-missions">
@@ -14,5 +14,10 @@
         <li>{{ hero.superheroName }}</li>
       </ul>
     </div>
+  </div>
+  
+  <div>
+    <button type="button" class="btn btn-danger" (click)="deleteMission()">Delete Mission</button>
+    <button style="margin-left: 10px;" type="button" class="btn btn-info" (click)="editMission()">Edit Mission</button>
   </div>
 </div>

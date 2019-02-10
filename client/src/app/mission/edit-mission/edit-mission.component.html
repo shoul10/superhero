@@ -1,0 +1,16 @@
+<h2>Edit Mission</h2>
+
+<form [formGroup]="missionForm" (ngSubmit)="updateMission()">
+  <div class="form-group">
+    <input formControlName="missionName" class="form-control" type="text" placeholder="Mission Name">
+  </div>
+
+  <div class="form-check">     
+    <input formControlName="completed" class="form-check-input" id="completedCheck" type="checkbox">
+    <label class="form-check-label" for="completedCheck">Completed</label>   
+  </div>  
+  
+  <div class="save-button">  
+    <button class="btn btn-primary" type="submit" [disabled]="!missionForm.valid">Save</button>
+  </div>
+</form>

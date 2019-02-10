@@ -24,7 +24,7 @@ export class MissionsComponent implements OnInit {
   }
 
   addMission() {
-    this.router.navigateByUrl('/missions/add/mission');
+    this.router.navigateByUrl('/missions/add');
   }
 
 }

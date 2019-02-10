@@ -9,6 +9,8 @@ const httpOptions = {
   })
 };
 
+const secureHttpOptions = {headers: new HttpHeaders({Authorization: 'Basic ' + btoa('admin:admin')})};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -28,5 +30,13 @@ export class MissionService {
 
   addMission(mission) {
     return this.http.post(this.missionApiUrl, mission, httpOptions);
+  }
+  
+  updateMission(missionId, mission) {
+    return this.http.put(this.missionApiUrl + '/' + missionId, mission, httpOptions);
+  }
+  
+  deleteMission(missionId) {
+    return this.http.delete(this.missionApiUrl+ '/' + missionId, secureHttpOptions);
   }
 }

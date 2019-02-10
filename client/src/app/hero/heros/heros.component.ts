@@ -24,7 +24,7 @@ export class HerosComponent implements OnInit {
   }
 
   addHero() {
-    this.router.navigateByUrl('/heros/add/heros');
+    this.router.navigateByUrl('/heros/add');
   }
 
 }
